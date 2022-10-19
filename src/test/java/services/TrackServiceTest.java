@@ -15,6 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 
 class TrackServiceTest {
@@ -24,8 +25,8 @@ class TrackServiceTest {
     private TrackDAO trackDAO = mock(TrackDAO.class);
 
     private TrackRequestDTO trackRequestDTO;
-    private static final int PLAYLIST_ID = 1;
-    private static final int TRACK_ID = 1;
+    private static final String PLAYLIST_ID = "1";
+    private static final String TRACK_ID = "1";
     private static final String TRACK_TITLE = "Roman sky";
     private static final boolean TRACK_OFFLINE_AVAILABLE = true;
     private static final List<Track> EMPTY_TRACKS = new ArrayList<>();
@@ -85,12 +86,12 @@ class TrackServiceTest {
     @Test
     void throwExceptionAddTrackToPlaylist(){
         // Arrange
-        Mockito.when(trackDAO.getTrack(anyInt())).thenThrow(NotFoundException.class);
+        Mockito.when(trackDAO.getTrack(anyString())).thenThrow(NotFoundException.class);
 
         // Act
 
         // Assert
-        assertThrows(NotFoundException.class, () -> trackService.addTrackToPlaylist(anyInt(), trackRequestDTO));
+        assertThrows(NotFoundException.class, () -> trackService.addTrackToPlaylist(anyString(), trackRequestDTO));
     }
 
     @Test
@@ -109,11 +110,11 @@ class TrackServiceTest {
     @Test
     void throwExceptionRemoveTrackFromPlaylist(){
         // Arrange
-        Mockito.when(trackDAO.getTrack(anyInt())).thenThrow(NotFoundException.class);
+        Mockito.when(trackDAO.getTrack(anyString())).thenThrow(NotFoundException.class);
 
         // Act
 
         // Assert
-        assertThrows(NotFoundException.class, () -> trackService.removeTrackFromPlaylist(PLAYLIST_ID, anyInt()));
+        assertThrows(NotFoundException.class, () -> trackService.removeTrackFromPlaylist(PLAYLIST_ID, anyString()));
     }
 }

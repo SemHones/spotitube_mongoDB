@@ -24,7 +24,7 @@ class PlaylistServiceTest {
 
     private PlaylistDAO playlistDAO = mock(PlaylistDAO.class);
 
-    private static final int USER_ID = 1;
+    private static final String USER_ID = "1";
     private static final int EMPTY_PLAYLIST_LENGTH = 0;
     private static final int FILLED_PLAYLIST_LENGTH = 400;
     private static final List<Playlist> EMPTY_PLAYLISTS = new ArrayList<>();
@@ -67,10 +67,10 @@ class PlaylistServiceTest {
     void getLengthOfFilledPlaylist() {
         // Arrange
         List<Playlist> filledPlaylists = new ArrayList<>();
-        Playlist playlist = new Playlist(1, "metal", 1);
+        Playlist playlist = new Playlist("1", "metal", "1");
 
         List<Track> tracks = new ArrayList<>();
-        Track track = new Track(1, "","", "","","",FILLED_PLAYLIST_LENGTH,0,false);
+        Track track = new Track("1", "","", "","","",FILLED_PLAYLIST_LENGTH,0,false);
         tracks.add(track);
 
         playlist.setTracks(tracks);

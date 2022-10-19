@@ -23,7 +23,7 @@ class UserServiceTest {
     private static final String USERNAME ="thomas";
     private static final String PASSWORD ="543";
     private static final String TOKEN = "5431-321";
-    private static final int USERID = 1;
+    private static final String USERID = "1";
 
     @BeforeEach
     void setup() {
@@ -39,7 +39,7 @@ class UserServiceTest {
         Mockito.when(userDAO.getSingleUserByToken(TOKEN)).thenReturn(user);
 
         // Act
-        int userID = userService.verifyToken(TOKEN);
+        String userID = userService.verifyToken(TOKEN);
 
         // Assert
         assertEquals(userID, user.getId());

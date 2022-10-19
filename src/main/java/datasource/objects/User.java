@@ -1,23 +1,23 @@
 package datasource.objects;
 
 public class User {
-    private int id;
+    private String id;
     private String username;
     private String token;
     private String password;
 
-    public User(int id, String username, String token, String password) {
+    public User(String id, String username, String token, String password) {
         this.id = id;
         this.username = username;
         this.token = token;
         this.password = password;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

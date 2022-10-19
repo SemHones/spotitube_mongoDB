@@ -18,7 +18,7 @@ public class PlaylistResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylists(@QueryParam("token") String token){
-        int userID = userService.verifyToken(token);
+        String userID = userService.verifyToken(token);
         PlaylistResponseDTO playlistResponseDTO = playlistService.getPlaylists(userID);
         return Response.ok(playlistResponseDTO).build();
     }
@@ -27,7 +27,7 @@ public class PlaylistResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPlaylist(@QueryParam("token") String token, PlaylistRequestDTO playlist) {
-        int userID = userService.verifyToken(token);
+        String userID = userService.verifyToken(token);
         PlaylistResponseDTO playlistResponseDTO = playlistService.createPlaylist(playlist.getPlaylistID(), playlist.getName(), userID);
         return Response.ok(playlistResponseDTO).build();
     }
@@ -36,8 +36,8 @@ public class PlaylistResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response changePlaylistName(@QueryParam("token") String token, @PathParam("id") int playlistID, PlaylistRequestDTO playlist) {
-        int userID = userService.verifyToken(token);
+    public Response changePlaylistName(@QueryParam("token") String token, @PathParam("id") String playlistID, PlaylistRequestDTO playlist) {
+        String userID = userService.verifyToken(token);
         PlaylistResponseDTO playlistResponseDTO = playlistService.editPlaylistName(playlistID, playlist.getName(), userID);
         return Response.ok(playlistResponseDTO).build();
     }
@@ -46,8 +46,8 @@ public class PlaylistResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response deletePlaylist(@QueryParam("token") String token, @PathParam("id") int playlistID) {
-        int userID = userService.verifyToken(token);
+    public Response deletePlaylist(@QueryParam("token") String token, @PathParam("id") String playlistID) {
+        String userID = userService.verifyToken(token);
         PlaylistResponseDTO playlistResponseDTO = playlistService.deletePlaylist(playlistID, userID);
         return Response.ok(playlistResponseDTO).build();
     }

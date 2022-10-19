@@ -3,30 +3,38 @@ package datasource.objects;
 import java.util.List;
 
 public class Playlist {
-    private int id;
+    private String id;
     private String name;
-    private int ownerId;
+    private String ownerId;
     private boolean owner;
     private List<Track> tracks;
 
-    public Playlist(int id, String name) {
+    public Playlist(String id, String name) {
         this.id = id;
         this.name = name;
         this.owner = false;
     }
 
-    public Playlist(int id, String name, int ownerId) {
+    public Playlist(String id, String name, String ownerId) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
         this.owner = true;
     }
 
-    public int getId() {
+    public Playlist(String id, String name, String ownerId, List<Track> tracks) {
+        this.id = id;
+        this.name = name;
+        this.ownerId = ownerId;
+        this.owner = true;
+        this.tracks = tracks;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -38,11 +46,11 @@ public class Playlist {
         this.name = name;
     }
 
-    public int getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(int ownerId) {
+    public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
 

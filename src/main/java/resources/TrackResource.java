@@ -16,7 +16,7 @@ public class TrackResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTracks(@QueryParam("token") String token, @PathParam("playlistId") int playlistID) {
+    public Response getTracks(@QueryParam("token") String token, @PathParam("playlistId") String playlistID) {
         userService.verifyToken(token);
         TrackResponseDTO tracksResponseDTO = trackService.getTracksFromPlaylist(playlistID);
         return Response.ok(tracksResponseDTO).build();
@@ -26,7 +26,7 @@ public class TrackResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTrackToPlaylist(@QueryParam("token") String token, @PathParam("playlistId") int playlistID, TrackRequestDTO track) {
+    public Response addTrackToPlaylist(@QueryParam("token") String token, @PathParam("playlistId") String playlistID, TrackRequestDTO track) {
         userService.verifyToken(token);
         TrackResponseDTO tracksResponseDTO = trackService.addTrackToPlaylist(playlistID, track);
         return Response.ok(tracksResponseDTO).build();
@@ -36,7 +36,7 @@ public class TrackResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response removeTrackFromPlaylist(@QueryParam("token") String token, @PathParam("playlistId") int playlistID, @PathParam("id") int trackId) {
+    public Response removeTrackFromPlaylist(@QueryParam("token") String token, @PathParam("playlistId") String playlistID, @PathParam("id") String trackId) {
         userService.verifyToken(token);
         TrackResponseDTO tracksResponseDTO = trackService.removeTrackFromPlaylist(playlistID, trackId);
         return Response.ok(tracksResponseDTO).build();

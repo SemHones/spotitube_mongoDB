@@ -10,7 +10,7 @@ public class TrackService {
 
     private TrackDAO trackDAO;
 
-    public TrackResponseDTO getTracksFromPlaylist(int playlistId){
+    public TrackResponseDTO getTracksFromPlaylist(String playlistId){
         TrackResponseDTO tracks = new TrackResponseDTO();
         boolean insidePlaylist = true;
 
@@ -18,7 +18,7 @@ public class TrackService {
         return tracks;
     }
 
-    public TrackResponseDTO getTracksOutsidePlaylist(int playlistId){
+    public TrackResponseDTO getTracksOutsidePlaylist(String playlistId){
         TrackResponseDTO tracks = new TrackResponseDTO();
         boolean insidePlaylist = false;
 
@@ -26,7 +26,7 @@ public class TrackService {
         return tracks;
     }
 
-    public TrackResponseDTO addTrackToPlaylist(int playlistId, TrackRequestDTO track) throws NotFoundException {
+    public TrackResponseDTO addTrackToPlaylist(String playlistId, TrackRequestDTO track) throws NotFoundException {
         TrackResponseDTO tracks = new TrackResponseDTO();
         boolean insidePlaylist = true;
 
@@ -39,7 +39,7 @@ public class TrackService {
         throw new NotFoundException();
     }
 
-    public TrackResponseDTO removeTrackFromPlaylist(int playlistId, int trackId) throws NotFoundException {
+    public TrackResponseDTO removeTrackFromPlaylist(String playlistId, String trackId) throws NotFoundException {
         TrackResponseDTO tracks = new TrackResponseDTO();
         boolean insidePlaylist = true;
 

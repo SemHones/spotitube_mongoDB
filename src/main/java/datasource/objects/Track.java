@@ -1,7 +1,7 @@
 package datasource.objects;
 
 public class Track {
-    private int id;
+    private String id;
     private String title;
     private String performer;
     private String album;
@@ -11,7 +11,7 @@ public class Track {
     private int playcount;
     private boolean offlineAvailable;
 
-    public Track(int id, String title, String performer, String album, String publicationDate, String description, int duration, int playcount, boolean offlineAvailable) {
+    public Track(String id, String title, String performer, String album, String publicationDate, String description, int duration, int playcount, boolean offlineAvailable) {
         this.id = id;
         this.title = title;
         this.performer = performer;
@@ -23,11 +23,11 @@ public class Track {
         this.offlineAvailable = offlineAvailable;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -87,7 +87,7 @@ public class Track {
         this.playcount = playcount;
     }
 
-    public boolean isOfflineAvailable() {
+    public boolean getOfflineAvailable() {
         return offlineAvailable;
     }
 

@@ -1,15 +1,15 @@
 package resources.dto;
 
 public class PlaylistRequestDTO {
-    private int playlistID;
+    private String playlistID;
     private String name;
     private boolean owner;
 
-    public int getPlaylistID() {
+    public String getPlaylistID() {
         return playlistID;
     }
 
-    public void setPlaylistID(int playlistID) {
+    public void setPlaylistID(String playlistID) {
         this.playlistID = playlistID;
     }
 

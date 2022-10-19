@@ -10,7 +10,7 @@ public class UserService {
 
     private UserDAO userDAO;
 
-    public int verifyToken(String token) throws TokenException {
+    public String verifyToken(String token) throws TokenException {
         User user = userDAO.getSingleUserByToken(token);
         if(!user.getUsername().isEmpty()){
             return user.getId();

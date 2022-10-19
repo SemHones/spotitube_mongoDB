@@ -30,8 +30,8 @@ class PlaylistResourceTest {
     private PlaylistService playlistService = mock(PlaylistService.class);
 
     private static final String TOKEN = "5431-321";
-    private static final int USER_ID = 1;
-    private static final int PLAYLIST_ID = 1;
+    private static final String USER_ID = "1";
+    private static final String PLAYLIST_ID = "1";
     private static final String PLAYLIST_NAME = "Metal";
     private static final boolean OWNER = false;
     private static final int LENGTH = 1;
@@ -93,12 +93,12 @@ class PlaylistResourceTest {
     @Test
     void throwExceptionGetPlaylists() {
         // Arrange
-        Mockito.when(playlistService.getPlaylists(anyInt())).thenThrow(TokenException.class);
+        Mockito.when(playlistService.getPlaylists(anyString())).thenThrow(TokenException.class);
 
         // Act
 
         // Assert
-        assertThrows(TokenException.class, () -> playlistResource.getPlaylists(anyString()));
+        assertThrows(TokenException.class, () -> playlistResource.getPlaylists(""));
     }
 
     @Test
@@ -116,7 +116,7 @@ class PlaylistResourceTest {
     @Test
     void throwExceptionCreatePlaylist() {
         // Arrange
-        Mockito.when(playlistService.createPlaylist(anyInt(), anyString(), anyInt())).thenThrow(TokenException.class);
+        Mockito.when(playlistService.createPlaylist(anyString(), anyString(), anyString())).thenThrow(TokenException.class);
 
         // Act
 
@@ -139,12 +139,12 @@ class PlaylistResourceTest {
     @Test
     void throwExceptionChangePlaylistName() {
         // Arrange
-        Mockito.when(playlistService.editPlaylistName(anyInt(), anyString(), anyInt())).thenThrow(UnauthorizedException.class);
+        Mockito.when(playlistService.editPlaylistName(anyString(), anyString(), anyString())).thenThrow(UnauthorizedException.class);
 
         // Act
 
         // Assert
-        assertThrows(UnauthorizedException.class, () -> playlistResource.changePlaylistName(TOKEN, anyInt(), playlistRequestDTO));
+        assertThrows(UnauthorizedException.class, () -> playlistResource.changePlaylistName(TOKEN, anyString(), playlistRequestDTO));
     }
 
     @Test
@@ -162,12 +162,12 @@ class PlaylistResourceTest {
     @Test
     void throwExceptionDeletePlaylist() {
         // Arrange
-        Mockito.when(playlistService.deletePlaylist(anyInt(), anyInt())).thenThrow(UnauthorizedException.class);
+        Mockito.when(playlistService.deletePlaylist(anyString(), anyString())).thenThrow(UnauthorizedException.class);
 
         // Act
 
         // Assert
-        assertThrows(UnauthorizedException.class, () -> playlistResource.deletePlaylist(TOKEN, anyInt()));
+        assertThrows(UnauthorizedException.class, () -> playlistResource.deletePlaylist(TOKEN, anyString()));
     }
 
 

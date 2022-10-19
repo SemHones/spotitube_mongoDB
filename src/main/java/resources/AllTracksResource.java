@@ -18,7 +18,7 @@ public class AllTracksResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllTracksOutsidePlaylist(@QueryParam("token") String token, @QueryParam("forPlaylist") int playlistID) {
+    public Response getAllTracksOutsidePlaylist(@QueryParam("token") String token, @QueryParam("forPlaylist") String playlistID) {
         userService.verifyToken(token);
         TrackResponseDTO tracksResponseDTO = trackService.getTracksOutsidePlaylist(playlistID);
         return Response.ok(tracksResponseDTO).build();

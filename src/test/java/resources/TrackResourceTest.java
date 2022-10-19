@@ -29,8 +29,8 @@ class TrackResourceTest {
     private UserService userService = mock(UserService.class);
     private TrackService trackService = mock(TrackService.class);
 
-    private static final int PLAYLIST_ID = 1;
-    private static final int TRACK_ID = 1;
+    private static final String PLAYLIST_ID = "1";
+    private static final String TRACK_ID = "1";
     private static final boolean TRACK_OFFLINE_AVAILABLE = true;
     private static final String TOKEN = "5431-321";
     private static final List<Track> EMPTY_TRACKS = new ArrayList<>();
@@ -69,12 +69,12 @@ class TrackResourceTest {
     @Test
     void throwExceptionGetTracks(){
         // Arrange
-        Mockito.when(trackService.getTracksFromPlaylist(anyInt())).thenThrow(TokenException.class);
+        Mockito.when(trackService.getTracksFromPlaylist(anyString())).thenThrow(TokenException.class);
 
         // Act
 
         // Assert
-        assertThrows(TokenException.class, () -> tracksResource.getTracks(TOKEN, anyInt()));
+        assertThrows(TokenException.class, () -> tracksResource.getTracks(TOKEN, anyString()));
     }
 
     @Test
@@ -92,12 +92,12 @@ class TrackResourceTest {
     @Test
     void throwExceptionGetAllTracksOutsidePlaylist(){
         // Arrange
-        Mockito.when(trackService.getTracksOutsidePlaylist(anyInt())).thenThrow(TokenException.class);
+        Mockito.when(trackService.getTracksOutsidePlaylist(anyString())).thenThrow(TokenException.class);
 
         // Act
 
         // Assert
-        assertThrows(TokenException.class, () -> allTracksResource.getAllTracksOutsidePlaylist(TOKEN, anyInt()));
+        assertThrows(TokenException.class, () -> allTracksResource.getAllTracksOutsidePlaylist(TOKEN, anyString()));
     }
 
     @Test
@@ -115,12 +115,12 @@ class TrackResourceTest {
     @Test
     void throwExceptionAddTrackToPlaylist(){
         // Arrange
-        Mockito.when(trackService.addTrackToPlaylist(anyInt(), any())).thenThrow(TokenException.class);
+        Mockito.when(trackService.addTrackToPlaylist(anyString(), any())).thenThrow(TokenException.class);
 
         // Act
 
         // Assert
-        assertThrows(TokenException.class, () -> tracksResource.addTrackToPlaylist(TOKEN, anyInt(), trackRequestDTO));
+        assertThrows(TokenException.class, () -> tracksResource.addTrackToPlaylist(TOKEN, anyString(), trackRequestDTO));
     }
 
     @Test
@@ -138,11 +138,11 @@ class TrackResourceTest {
     @Test
     void throwExceptionRemoveTrackFromPlaylist(){
         // Arrange
-        Mockito.when(trackService.removeTrackFromPlaylist(anyInt(), anyInt())).thenThrow(TokenException.class);
+        Mockito.when(trackService.removeTrackFromPlaylist(anyString(), anyString())).thenThrow(TokenException.class);
 
         // Act
 
         // Assert
-        assertThrows(TokenException.class, () -> tracksResource.removeTrackFromPlaylist(TOKEN, PLAYLIST_ID, anyInt()));
+        assertThrows(TokenException.class, () -> tracksResource.removeTrackFromPlaylist(TOKEN, PLAYLIST_ID, anyString()));
     }
 }
