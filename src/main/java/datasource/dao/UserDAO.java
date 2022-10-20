@@ -1,37 +1,36 @@
 package datasource.dao;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import datasource.objects.User;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
+import static com.mongodb.client.model.Filters.eq;
 
 public class UserDAO extends DefaultDAO{
-    private static final String SELECT_USER_WHERE_USERNAME_AND_PASSWORD =  "select * from spotitube.user where username = ? and password = ?";
-    private static final String SELECT_USER_WHERE_TOKEN =  "select * from spotitube.user where token = ?";
+
+    private static final String COLLECTION_NAME = "user";
 
     private User user;
 
     public UserDAO(){ super(); }
 
     public User getSingleUser(String username, String password){
-        this.user = new User(0, "", "", "");
+        this.user = new User("", "", "", "");
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
-            pstmt = connection.prepareStatement(SELECT_USER_WHERE_USERNAME_AND_PASSWORD);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            rs = pstmt.executeQuery();
-            while (rs.next()){
-                return new User(
-                    rs.getInt("id"),
-                    rs.getString("username"),
-                    rs.getString("token"),
-                    rs.getString("password")
-                );
-            }
+            MongoCollection<Document> collection = openConnection(COLLECTION_NAME);
 
-        } catch (SQLException e) {
-            logError(e);
+            Bson byUsername = eq("username", username);
+            Bson byPassword = eq("password", password);
+            FindIterable<Document> cursor = collection.find(byUsername);
+            return documentToUser(cursor.first());
+
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
@@ -39,28 +38,35 @@ public class UserDAO extends DefaultDAO{
     }
 
     public User getSingleUserByToken(String token){
-        this.user = new User(0, "", "", "");
+        this.user = new User("", "", "", "");
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
-            pstmt = connection.prepareStatement(SELECT_USER_WHERE_TOKEN);
-            pstmt.setString(1, token);
-            rs = pstmt.executeQuery();
-            while (rs.next()){
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("token"),
-                        rs.getString("password")
-                );
-            }
+            MongoCollection<Document> collection = openConnection(COLLECTION_NAME);
 
-        } catch (SQLException e) {
-            logError(e);
+            Bson byToken = eq("token", token);
+            FindIterable<Document> cursor = collection.find(byToken);
+            return documentToUser(cursor.first());
+
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
         return this.user;
     }
 
+    private Document userToDocument(User user){
+        return new Document(new BasicDBObject("_id", user.getId())
+                .append("username", user.getUsername())
+                .append("token", user.getToken())
+                .append("password", user.getPassword()).toMap());
+    }
 
+    private User documentToUser(Document cursor){
+        return new User(
+            (String)cursor.get("_id"),
+            (String)cursor.get("username"),
+            (String)cursor.get("token"),
+            (String)cursor.get("password")
+        );
+    }
 }

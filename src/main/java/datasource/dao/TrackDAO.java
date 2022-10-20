@@ -1,84 +1,70 @@
 package datasource.dao;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import datasource.objects.Track;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class TrackDAO extends DefaultDAO{
 
-    private static final String SELECT_TRACKS_WHERE_ID = "select * from spotitube.track where id = ?";
-    private static final String SELECT_TRACKS_FROM_PLAYLIST = "select t.* from spotitube.track t inner join spotitube.track_on_playlist tp on t.id = tp.trackId where tp.playlistId = ?";
-    private static final String SELECT_TRACKS_OUTSIDE_PLAYLIST = "select * from spotitube.track where id not in (select t.id from spotitube.track t inner join spotitube.track_on_playlist tp on t.id = tp.trackId where tp.playlistId = ?)";
-    private static final String ADD_TRACK_TO_PLAYLIST = "insert into spotitube.track_on_playlist (playlistId, trackId) values (?, ?)";
-    private static final String UPDATE_TRACK_OFFLINE_AVAILABLE = "update spotitube.track set offlineAvailable = ? where id = ?";
-    private static final String DELETE_TRACK_FROM_PLAYLIST = "delete from spotitube.track_on_playlist where playlistId = ? and trackId = ?";
+    private static final String COLLECTION_NAME = "track";
+
+    private PlaylistDAO playlistDAO = new PlaylistDAO();
 
     public TrackDAO(){
         super();
     }
 
-    public Track getTrack(int trackId) {
-        Track emptyTrack = new Track(0, "","","","","", 0, 0, false);
+    public Track getTrack(String trackId) {
+        Track emptyTrack = new Track("", "","","","","", 0, 0, false);
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
-            pstmt = connection.prepareStatement(SELECT_TRACKS_WHERE_ID);
+            MongoCollection<Document> collection = openConnection(COLLECTION_NAME);
 
-            pstmt.setInt(1, trackId);
-
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                return new Track(
-                    rs.getInt("id"),
-                    rs.getString("title"),
-                    rs.getString("performer"),
-                    rs.getString("album"),
-                    rs.getString("publicationDate"),
-                    rs.getString("description"),
-                    rs.getInt("duration"),
-                    rs.getInt("playCount"),
-                    rs.getBoolean("offlineAvailable")
-                );
-            }
-        } catch (SQLException e) {
-            logError(e);
+            Bson query = eq("_id", trackId);
+            FindIterable<Document> cursor = collection.find(query);
+            return documentToTrack(cursor.first());
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
         return emptyTrack;
     }
 
-    public List<Track> getTracks(int playlistId, boolean insidePlaylist) {
+    public List<Track> getTracks(String playlistId, boolean insidePlaylist) {
         List<Track> tracks = new ArrayList<>();
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
             if(insidePlaylist){
-                pstmt = connection.prepareStatement(SELECT_TRACKS_FROM_PLAYLIST);
+                tracks = playlistDAO.getPlaylist(playlistId).getTracks();
             }
             else{
-                pstmt = connection.prepareStatement(SELECT_TRACKS_OUTSIDE_PLAYLIST);
-            }
+                MongoCollection<Document> collection = openConnection(COLLECTION_NAME);
 
-            pstmt.setInt(1, playlistId);
-
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                Track item = new Track(
-                    rs.getInt("id"),
-                    rs.getString("title"),
-                    rs.getString("performer"),
-                    rs.getString("album"),
-                    rs.getString("publicationDate"),
-                    rs.getString("description"),
-                    rs.getInt("duration"),
-                    rs.getInt("playCount"),
-                    rs.getBoolean("offlineAvailable")
-                );
-                tracks.add(item);
+                FindIterable<Document> cursor = collection.find();
+                List<Track> playlistTracks = playlistDAO.getPlaylist(playlistId).getTracks();
+                for (Document object : cursor){
+                    boolean alreadyExists = false;
+                    for(Track track : playlistTracks){
+                        if(track.getId() == documentToTrack(object).getId()){
+                            alreadyExists = true;
+                            break;
+                        }
+                    }
+                    if(!alreadyExists){
+                        tracks.add(documentToTrack(object));
+                    }
+                }
             }
-        } catch (SQLException e) {
-            logError(e);
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
@@ -86,51 +72,64 @@ public class TrackDAO extends DefaultDAO{
     }
 
 
-    public void addTrackToPlaylist(int playlistId, int trackId){
+    public void addTrackToPlaylist(String playlistId, String trackId){
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
-            pstmt = connection.prepareStatement(ADD_TRACK_TO_PLAYLIST);
-
-            pstmt.setInt(1, playlistId);
-            pstmt.setInt(2, trackId);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            logError(e);
+            playlistDAO.addTrackToPlaylist(playlistId, getTrack(trackId));
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
     }
 
-    public void setTrackOfflineAvailable(boolean offlineAvailable, int trackId){
+    public void setTrackOfflineAvailable(boolean offlineAvailable, String trackId){
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
-            pstmt = connection.prepareStatement(UPDATE_TRACK_OFFLINE_AVAILABLE);
+            MongoCollection<Document> collection = openConnection(COLLECTION_NAME);
 
-            pstmt.setBoolean(1, offlineAvailable);
-            pstmt.setInt(2, trackId);
+            Track newTrack = getTrack(trackId);
+            newTrack.setOfflineAvailable(offlineAvailable);
 
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            logError(e);
+            collection.findOneAndReplace( trackToDocument(getTrack(trackId)), trackToDocument(newTrack));
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
     }
 
-    public void deleteTrack(int playlistId, int trackId){
+    public void deleteTrack(String playlistId, String trackId){
         try {
-            connection = DriverManager.getConnection(databaseProperties.connectionString());
-            pstmt = connection.prepareStatement(DELETE_TRACK_FROM_PLAYLIST);
-
-            pstmt.setInt(1, playlistId);
-            pstmt.setInt(2, trackId);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            logError(e);
+            playlistDAO.removeTrackFromPlaylist(playlistId, getTrack(trackId));
+        } catch (MongoException me) {
+            logError(me);
         } finally {
             closeConnections();
         }
+    }
+
+    public Document trackToDocument(Track track){
+        return new Document(new BasicDBObject("_id", track.getId())
+                .append("title", track.getTitle())
+                .append("performer", track.getPerformer())
+                .append("album", track.getAlbum())
+                .append("publicationDate", track.getPublicationDate())
+                .append("description", track.getDescription())
+                .append("duration", track.getDuration())
+                .append("playcount", track.getPlaycount())
+                .append("offlineAvailable", track.getOfflineAvailable()).toMap());
+    }
+
+    public Track documentToTrack(Document cursor){
+        return new Track(
+                (String)cursor.get("_id"),
+                (String)cursor.get("title"),
+                (String)cursor.get("performer"),
+                (String)cursor.get("album"),
+                (String)cursor.get("publicationDate"),
+                (String)cursor.get("description"),
+                (int)cursor.get("duration"),
+                (int)cursor.get("playcount"),
+                (boolean)cursor.get("offlineAvailable")
+        );
     }
 }

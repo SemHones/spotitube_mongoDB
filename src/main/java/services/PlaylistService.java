@@ -25,6 +25,9 @@ public class PlaylistService {
         int totalDuration = 0;
         for (Playlist playlist : playlists){
             List<Track> tracks = playlist.getTracks();
+            if(playlist.getTracks() == null){
+                return totalDuration;
+            }
             for (Track track : tracks){
                 totalDuration += track.getDuration();
             }

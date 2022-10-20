@@ -91,17 +91,6 @@ class PlaylistResourceTest {
     }
 
     @Test
-    void throwExceptionGetPlaylists() {
-        // Arrange
-        Mockito.when(playlistService.getPlaylists(anyString())).thenThrow(TokenException.class);
-
-        // Act
-
-        // Assert
-        assertThrows(TokenException.class, () -> playlistResource.getPlaylists(""));
-    }
-
-    @Test
     void canCreatePlaylist() {
         // Arrange
         Mockito.when(playlistService.createPlaylist(playlistRequestDTO.getPlaylistID(), playlistRequestDTO.getName(), USER_ID)).thenReturn(playlistResponseDTO);
@@ -111,17 +100,6 @@ class PlaylistResourceTest {
 
         // Assert
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-    }
-
-    @Test
-    void throwExceptionCreatePlaylist() {
-        // Arrange
-        Mockito.when(playlistService.createPlaylist(anyString(), anyString(), anyString())).thenThrow(TokenException.class);
-
-        // Act
-
-        // Assert
-        assertThrows(TokenException.class, () -> playlistResource.createPlaylist(anyString(), playlistRequestDTO));
     }
 
     @Test
@@ -137,17 +115,6 @@ class PlaylistResourceTest {
     }
 
     @Test
-    void throwExceptionChangePlaylistName() {
-        // Arrange
-        Mockito.when(playlistService.editPlaylistName(anyString(), anyString(), anyString())).thenThrow(UnauthorizedException.class);
-
-        // Act
-
-        // Assert
-        assertThrows(UnauthorizedException.class, () -> playlistResource.changePlaylistName(TOKEN, anyString(), playlistRequestDTO));
-    }
-
-    @Test
     void canDeletePlaylist() {
         // Arrange
         Mockito.when(playlistService.deletePlaylist(PLAYLIST_ID, USER_ID)).thenReturn(playlistResponseDTO);
@@ -157,17 +124,6 @@ class PlaylistResourceTest {
 
         // Assert
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-    }
-
-    @Test
-    void throwExceptionDeletePlaylist() {
-        // Arrange
-        Mockito.when(playlistService.deletePlaylist(anyString(), anyString())).thenThrow(UnauthorizedException.class);
-
-        // Act
-
-        // Assert
-        assertThrows(UnauthorizedException.class, () -> playlistResource.deletePlaylist(TOKEN, anyString()));
     }
 
 
