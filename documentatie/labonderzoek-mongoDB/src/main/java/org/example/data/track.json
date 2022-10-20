@@ -1,0 +1,55 @@
+{
+  "_id": "1",
+  "title": "Burn it down",
+  "performer": "Avenged Sevenfold",
+  "album": "City of Evil",
+  "publicationDate": "2005",
+  "description": "Song by Avenged Sevenfold",
+  "duration": 458,
+  "playcount": 3,
+  "offlineAvailable": false
+}
+{
+  "_id": "2",
+  "title": "The blister exists",
+  "performer": "Slipknot",
+  "album": "The subliminal Verses",
+  "publicationDate": "2004",
+  "description": "Song by Slipknot",
+  "duration": 519,
+  "playcount": 1,
+  "offlineAvailable": false
+}
+{
+  "_id": "3",
+  "title": "Deutschland",
+  "performer": "Rammstein",
+  "album": "Rammstein",
+  "publicationDate": "2019",
+  "description": "Song by Rammstein",
+  "duration": 522,
+  "playcount": 4,
+  "offlineAvailable": false
+}
+{
+  "_id": "4",
+  "title": "So Long, Marianne",
+  "performer": "Leonard Cohen",
+  "album": "Songs of Leonard Cohen",
+  "publicationDate": "",
+  "description": "",
+  "duration": 546,
+  "playcount": 0,
+  "offlineAvailable": true
+}
+{
+  "_id": "5",
+  "title": "Song for someone",
+  "performer": "The Frames",
+  "album": "The cost",
+  "publicationDate": "",
+  "description": "",
+  "duration": 350,
+  "playcount": 0,
+  "offlineAvailable": false
+}
